@@ -167,13 +167,6 @@ encrypt-aes256: routine [
 	in [binary!]
 	key [binary!]
 	iv [binary!]
-	/local
-		ctx
-		in-series in-bytes inlen
-		key-series key-bytes iv-series iv-bytes
-		buffer
-		outlen out
-		finallen
 ] [
 	crypt-process in key iv EVP_aes_256_cbc yes
 ]
@@ -182,13 +175,6 @@ decrypt-aes256: routine [
 	ciph [binary!]
 	key [binary!]
 	iv [binary!]
-	/local
-		ctx
-		ciph-series ciph-bytes ciphlen
-		key-series key-bytes iv-series iv-bytes
-		buffer
-		outlen out
-		finallen
 ] [
 	crypt-process ciph key iv EVP_aes_256_cbc no
 ]
