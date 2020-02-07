@@ -156,6 +156,7 @@ Red [
 			ctx
 		binary/rs-append out buffer outlen
 
+		free buffer
 		EVP_CIPHER_CTX_free ctx
 		stack/set-last as red-value! out
 	]
