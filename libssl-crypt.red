@@ -138,7 +138,7 @@ Red [
 			ctx
 
 		max-chunk: 1024				;-- 1 KiB
-		buffer: allocate max-chunk + 16
+		buffer: allocate max-chunk + 16		;-- with additional padding for EVP_CipherFinal_ex
 		out: binary/make-at  as red-value! stack/push*  0
 		outlen: 0
 		while [inlen > 0] [
@@ -168,6 +168,7 @@ encrypt-aes256: routine [
 	in [binary!]
 	key [binary!]
 	iv [binary!]
+;	return [binary!]	
 ] [
 	crypt-process in key iv EVP_aes_256_cbc yes
 ]
@@ -176,17 +177,33 @@ decrypt-aes256: routine [
 	ciph [binary!]
 	key [binary!]
 	iv [binary!]
+;	return [binary!]	
 ] [
 	crypt-process ciph key iv EVP_aes_256_cbc no
 ]
 
+urandom: routine [
+	size [integer!]
+;	return [binary!]
+	/local
+		s [series!]
+		p [byte-ptr!]
+		out [red-binary!]	
+] [
+	out: binary/make-at  as red-value! stack/push*  size
+	crypto/urandom  binary-bytes out  size
+	s: GET_BUFFER(out)
+	p: as byte-ptr! s/tail
+	s/tail: as cell! p + size
+	stack/set-last as red-value! out
+]
 
 encrypt: function [
 	data [binary!]
 	pass [string!]
 	return: [binary!]
 ] [
-	salt: copy/part checksum random/secure to string! now/precise 'SHA384 8
+	salt: urandom 8
 	hash: pbkdf2/derive pass salt 10000 48 'SHA384
 	iv: copy at hash 33
 	key: copy/part hash 32
