@@ -186,8 +186,8 @@ encrypt: function [
 	pass [string!]
 	return: [binary!]
 ] [
-	salt: copy/part checksum random/secure to string! now/precise 'SHA256 8
-	hash: pbkdf2/derive pass salt 10000 48 'SHA256
+	salt: copy/part checksum random/secure to string! now/precise 'SHA384 8
+	hash: pbkdf2/derive pass salt 10000 48 'SHA384
 	iv: copy at hash 33
 	key: copy/part hash 32
 	rejoin [
@@ -202,7 +202,7 @@ decrypt: function [
 	return: [binary!]
 ] [
 	salt: copy/part data 8
-	hash: pbkdf2/derive pass salt 10000 48 'SHA256
+	hash: pbkdf2/derive pass salt 10000 48 'SHA384
 	iv: copy at hash 33
 	key: copy/part hash 32
 	decrypt-aes256  at data 9  key iv
