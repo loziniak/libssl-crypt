@@ -75,7 +75,7 @@ Red [
 		/local	
 			s [red-string!]
 	] [
-		s: string/load "Libssl-crypt error: " 18 UTF-8
+		s: string/load "Libssl-crypt error. " 20 UTF-8
 		string/concatenate
 			s
 			string/load  msg  length? msg  UTF-8
